@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kshama × Bounce Insights</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bounce: #e24ed1;
+    --bounce-dim: rgba(226,78,209,0.12);
+    --bounce-mid: rgba(226,78,209,0.25);
+    --black: #000000;
+    --lavender: #f8dbf5;
+    --white: #ffffff;
+    --text: #000000;
+    --muted: rgba(0,0,0,0.45);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--lavender);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* BG BLOBS */
+  .blob1 {
+    position: fixed;
+    top: -100px; left: -100px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(226,78,209,0.15) 0%, transparent 70%);
+    pointer-events: none;
+    animation: float1 6s ease-in-out infinite;
+  }
+  .blob2 {
+    position: fixed;
+    bottom: -100px; right: -100px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(226,78,209,0.1) 0%, transparent 70%);
+    pointer-events: none;
+    animation: float2 8s ease-in-out infinite;
+  }
+  @keyframes float1 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(30px,20px)} }
+  @keyframes float2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-20px,-30px)} }
+
+  /* HEADER */
+  .header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    padding: 20px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+  }
+  .header-logo {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--black);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .header-logo span {
+    color: var(--bounce);
+  }
+  .header-progress {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+  .progress-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.15);
+    transition: all 0.3s;
+  }
+  .progress-dot.active { background: var(--bounce); transform: scale(1.3); }
+  .progress-dot.done { background: var(--bounce); opacity: 0.4; }
+
+  /* CARD STACK */
+  .card-stack {
+    position: relative;
+    width: 380px;
+    height: 520px;
+    margin-top: 20px;
+  }
+
+  /* STACK SHADOWS */
+  .card-shadow {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 20px;
+    background: var(--white);
+    transition: all 0.3s;
+  }
+  .shadow-2 {
+    transform: rotate(-4deg) translateY(8px);
+    opacity: 0.5;
+    z-index: 1;
+  }
+  .shadow-3 {
+    transform: rotate(3deg) translateY(16px);
+    opacity: 0.3;
+    z-index: 0;
+  }
+
+  /* MAIN CARD */
+  .card {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: var(--white);
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(226,78,209,0.2), 0 4px 20px rgba(0,0,0,0.08);
+    z-index: 10;
+    overflow: hidden;
+    cursor: grab;
+    user-select: none;
+    transition: transform 0.1s ease;
+    display: flex;
+    flex-direction: column;
+  }
+  .card:active { cursor: grabbing; }
+
+  /* CARD TOP BAR */
+  .card-top {
+    background: var(--bounce);
+    padding: 18px 24px 16px;
+    position: relative;
+    overflow: visible;
+    flex-shrink: 0;
+    min-height: auto;
+  }
+  .card-top::after {
+    content: '';
+    position: absolute;
+    bottom: -30px; right: -30px;
+    width: 120px; height: 120px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 50%;
+  }
+  .card-number {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 8px;
+  }
+  .card-category {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--white);
+    line-height: 1.25;
+    max-height: none;
+    overflow: visible;
+  }
+
+  /* CARD BODY */
+  .card-body {
+    flex: 1;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .card-emoji {
+    font-size: 52px;
+    text-align: center;
+    margin-bottom: 16px;
+    animation: bounceIn 0.5s ease;
+  }
+  @keyframes bounceIn {
+    0% { transform: scale(0); opacity: 0; }
+    60% { transform: scale(1.2); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  .card-stat {
+    font-family: 'Syne', sans-serif;
+    font-size: 42px;
+    font-weight: 800;
+    color: var(--bounce);
+    text-align: center;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .card-stat-label {
+    font-size: 12px;
+    color: var(--muted);
+    text-align: center;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .card-main-text {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--black);
+    line-height: 1.5;
+    text-align: center;
+    margin-bottom: 12px;
+  }
+  .card-sub-text {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+    text-align: center;
+  }
+  .card-sub-text strong { color: var(--black); font-weight: 600; }
+
+  /* SWIPE HINT */
+  .card-hint {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 4px;
+    margin-top: 12px;
+  }
+  .hint-nope {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(0,0,0,0.2);
+    border: 1.5px solid rgba(0,0,0,0.15);
+    padding: 4px 10px;
+    border-radius: 20px;
+  }
+  .hint-like {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--bounce);
+    border: 1.5px solid var(--bounce-mid);
+    padding: 4px 10px;
+    border-radius: 20px;
+  }
+
+  /* SWIPE OVERLAYS */
+  .swipe-nope {
+    position: absolute;
+    top: 24px; left: 24px;
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    color: #ff4444;
+    border: 3px solid #ff4444;
+    padding: 6px 14px;
+    border-radius: 8px;
+    transform: rotate(-12deg);
+    opacity: 0;
+    transition: opacity 0.1s;
+    z-index: 20;
+    pointer-events: none;
+  }
+  .swipe-like {
+    position: absolute;
+    top: 24px; right: 24px;
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--bounce);
+    border: 3px solid var(--bounce);
+    padding: 6px 14px;
+    border-radius: 8px;
+    transform: rotate(12deg);
+    opacity: 0;
+    transition: opacity 0.1s;
+    z-index: 20;
+    pointer-events: none;
+  }
+
+  /* BUTTONS */
+  .buttons {
+    display: flex;
+    gap: 20px;
+    margin-top: 28px;
+    justify-content: center;
+    align-items: center;
+  }
+  .btn-nope {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: var(--white);
+    border: 2px solid rgba(0,0,0,0.1);
+    font-size: 22px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    transition: all 0.2s;
+  }
+  .btn-nope:hover { transform: scale(1.1); border-color: #ff4444; }
+  .btn-like {
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    background: var(--bounce);
+    border: none;
+    font-size: 28px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 24px rgba(226,78,209,0.4);
+    transition: all 0.2s;
+  }
+  .btn-like:hover { transform: scale(1.1); box-shadow: 0 12px 32px rgba(226,78,209,0.5); }
+  .btn-super {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: var(--white);
+    border: 2px solid rgba(226,78,209,0.3);
+    font-size: 22px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    transition: all 0.2s;
+  }
+  .btn-super:hover { transform: scale(1.1); border-color: var(--bounce); }
+
+  /* MATCH SCREEN */
+  .match-screen {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px 32px;
+    animation: matchIn 0.6s ease;
+  }
+  @keyframes matchIn {
+    0% { transform: scale(0.8); opacity: 0; }
+    60% { transform: scale(1.05); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  .match-emoji { font-size: 72px; margin-bottom: 20px; animation: spin 0.6s ease; }
+  @keyframes spin { 0%{transform:rotate(-20deg) scale(0)} 60%{transform:rotate(10deg) scale(1.2)} 100%{transform:rotate(0) scale(1)} }
+  .match-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--bounce);
+    margin-bottom: 8px;
+  }
+  .match-sub {
+    font-size: 15px;
+    color: var(--muted);
+    margin-bottom: 32px;
+    line-height: 1.6;
+  }
+  .match-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    width: 100%;
+    margin-bottom: 28px;
+  }
+  .match-stat {
+    background: var(--lavender);
+    border-radius: 12px;
+    padding: 14px;
+  }
+  .match-stat-val {
+    font-family: 'Syne', sans-serif;
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--bounce);
+  }
+  .match-stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+  .match-cta {
+    background: var(--bounce);
+    color: var(--white);
+    border: none;
+    padding: 16px 32px;
+    border-radius: 50px;
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    width: 100%;
+    margin-bottom: 12px;
+    box-shadow: 0 8px 24px rgba(226,78,209,0.35);
+    transition: all 0.2s;
+  }
+  .match-cta:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(226,78,209,0.45); }
+  .match-email {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 1px;
+  }
+
+  /* CONFETTI */
+  .confetti-piece {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    pointer-events: none;
+    animation: confettiFall linear forwards;
+  }
+  @keyframes confettiFall {
+    0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+  }
+
+  /* SWIPE INSTRUCTION */
+  .swipe-instruction {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 16px;
+    text-align: center;
+    animation: fadeInOut 2s ease 1s forwards;
+  }
+  @keyframes fadeInOut { 0%{opacity:0} 20%{opacity:1} 80%{opacity:1} 100%{opacity:0} }
+  /* TOAST */
+  #toast {
+    position: fixed;
+    bottom: 130px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #000000;
+    color: #ffffff;
+    padding: 12px 24px;
+    border-radius: 50px;
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+    z-index: 9999;
+    pointer-events: none;
+    display: none;
+    opacity: 0;
+  }
+</style>
+</head>
+<body>
+
+<div class="blob1"></div>
+<div class="blob2"></div>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-logo">Kshama <span>× Bounce</span></div>
+  <div class="header-progress" id="progressDots"></div>
+</div>
+
+<!-- CARD STACK -->
+<div class="card-stack" id="cardStack">
+  <div class="card-shadow shadow-3"></div>
+  <div class="card-shadow shadow-2"></div>
+
+  <div class="card" id="mainCard">
+    <div class="swipe-nope" id="swipeNope">NOPE</div>
+    <div class="swipe-like" id="swipeLike">LIKE 💜</div>
+    <div class="card-top" id="cardTop">
+      <div class="card-number" id="cardNumber">Card 01 / 08</div>
+      <div class="card-category" id="cardCategory">Loading...</div>
+    </div>
+    <div class="card-body">
+      <div>
+        <div class="card-emoji" id="cardEmoji"></div>
+        <div class="card-stat" id="cardStat"></div>
+        <div class="card-stat-label" id="cardStatLabel"></div>
+        <div class="card-main-text" id="cardMainText"></div>
+        <div class="card-sub-text" id="cardSubText"></div>
+      </div>
+      <div class="card-hint">
+        <span class="hint-nope">← Pass</span>
+        <span class="hint-like">Like →</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BUTTONS -->
+<div class="buttons" id="actionButtons">
+  <button class="btn-nope" onclick="swipeCard('left')" title="Pass">✕</button>
+  <button class="btn-like" onclick="hideToast(); swipeCard('right')" title="Like">💜</button>
+  <button class="btn-super" onclick="hideToast(); swipeCard('super')" title="Super Like">⭐</button>
+</div>
+
+<div class="swipe-instruction" id="swipeInstruction">Swipe right to like · Swipe left to pass</div>
+
+<!-- MATCH SCREEN (hidden initially) -->
+<div class="match-screen" id="matchScreen">
+  <div class="match-emoji">🚀</div>
+  <div class="match-title">It's a Match!</div>
+  <div class="match-sub">You've swiped right 8 times.<br>Seems like Kshama belongs at Bounce.</div>
+  <div class="match-stats">
+    <div class="match-stat">
+      <div class="match-stat-val">126</div>
+      <div class="match-stat-label">Calls in 3 days</div>
+    </div>
+    <div class="match-stat">
+      <div class="match-stat-val">4</div>
+      <div class="match-stat-label">Recruits converted</div>
+    </div>
+    <div class="match-stat">
+      <div class="match-stat-val">10</div>
+      <div class="match-stat-label">Industries covered</div>
+    </div>
+    <div class="match-stat">
+      <div class="match-stat-val">2027</div>
+      <div class="match-stat-label">Dublin-ready</div>
+    </div>
+  </div>
+  <button class="match-cta" onclick="window.location.href='mailto:kshama.n.patil29@gmail.com?subject=Let\'s talk — Bounce Insights BDR'">
+    Send Kshama a Message 💜
+  </button>
+  <div class="match-email">kshama.n.patil29@gmail.com</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const cards = [
+  {
+    number: "01 / 08",
+    category: "You asked for\ncreative outreach.",
+    emoji: "👋",
+    stat: "",
+    statLabel: "",
+    mainText: "So instead of a cover letter, Kshama built this.",
+    subText: "She figured if the role is about showing up differently — the application should too."
+  },
+  {
+    number: "02 / 08",
+    category: "She's been doing\nthe job.",
+    emoji: "📞",
+    stat: "240+",
+    statLabel: "Cold calls in 4 days at Third Bridge",
+    mainText: "Not perfect. Still learning. But learning while doing — serving real clients, under real pressure.",
+    subText: "Every no is a lesson. Every yes is a signal. <strong>She takes both seriously.</strong>"
+  },
+  {
+    number: "03 / 08",
+    category: "Getting uncomfortable\nand comfortable with no.",
+    emoji: "💪",
+    stat: "4",
+    statLabel: "Expert recruits converted",
+    mainText: "240+ calls. 4 converts. That ratio didn't discourage her — it made her want to understand why.",
+    subText: "She went back to her manager, asked what she missed, and tried again. <strong>The number went up.</strong>"
+  },
+  {
+    number: "04 / 08",
+    category: "She's curious about\nhow people decide.",
+    emoji: "🧠",
+    stat: "35+",
+    statLabel: "Cold research interviews",
+    mainText: "For Skippio — a crowd management system that wanted to enter the local cafés and bars market. She cold interviewed 35+ consumers and 8+ businesses to figure out if there was actually a fit.",
+    subText: "Her grades agree too — <strong>1.1 in Consumer Behaviour and Contemporary Marketing Management.</strong> The classroom and the field are telling the same story."
+  },
+  {
+    number: "05 / 08",
+    category: "She knew what\nthey wanted.",
+    emoji: "🎯",
+    stat: "70+",
+    statLabel: "Tickets sold in one week",
+    mainText: "As President of TCD Foresight Business Group, she understood that students today want to know one thing: how do I actually get hired?",
+    subText: "She built the event around that insight. <strong>Sold out in a week.</strong>"
+  },
+  {
+    number: "06 / 08",
+    category: "Bonus points:\nCharlie Butler knows her.",
+    emoji: "⭐",
+    stat: "",
+    statLabel: "",
+    mainText: "She cold emailed Charlie in April this year. He appreciated the approach — but couldn't offer her a spot at Bounce Insights.",
+    subText: "She didn't take it personally. She went away, got sharper, and built this instead. <strong>Still here. Still keen.</strong>"
+  },
+  {
+    number: "07 / 08",
+    category: "She'll be in Dublin.\nYou could get her there sooner.",
+    emoji: "🍀",
+    stat: "2027",
+    statLabel: "Trinity graduation · Dublin from Sept 2026",
+    mainText: "Back in Dublin from September for her final year at Trinity. Available to contribute remotely right now.",
+    subText: "Graduation is 2027 — but the conversation <strong>doesn't have to wait that long.</strong>"
+  },
+  {
+    number: "08 / 08",
+    category: "Ambitious. Coachable.\nResilient. Sound familiar?",
+    emoji: "🚀",
+    stat: "",
+    statLabel: "",
+    mainText: "You said it yourself — this role is built for ambitious, coachable, resilient people who want to accelerate their careers.",
+    subText: "240+ calls and counting. Asks why every no happened. Hosts a podcast called The Strategy Seat — because she understands that the best way to understand people and insights is by talking to more people and engaging with more insights. <strong>That's who's on the other side of this swipe.</strong>"
+  }
+];
+
+let currentCard = 0;
+let startX = 0;
+let currentX = 0;
+let isDragging = false;
+let likesCount = 0;
+
+const card = document.getElementById('mainCard');
+const progressDots = document.getElementById('progressDots');
+
+// Init progress dots
+function initDots() {
+  progressDots.innerHTML = '';
+  cards.forEach((_, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'progress-dot' + (i === 0 ? ' active' : '');
+    progressDots.appendChild(dot);
+  });
+}
+
+function updateDots() {
+  const dots = progressDots.querySelectorAll('.progress-dot');
+  dots.forEach((dot, i) => {
+    dot.className = 'progress-dot';
+    if (i < currentCard) dot.classList.add('done');
+    if (i === currentCard) dot.classList.add('active');
+  });
+}
+
+function loadCard(index) {
+  if (index >= cards.length) {
+    showMatch();
+    return;
+  }
+  const c = cards[index];
+  document.getElementById('cardNumber').textContent = `Card ${c.number}`;
+  document.getElementById('cardCategory').textContent = c.category;
+  document.getElementById('cardEmoji').textContent = c.emoji;
+  document.getElementById('cardStat').textContent = c.stat;
+  document.getElementById('cardStatLabel').textContent = c.statLabel;
+  document.getElementById('cardMainText').textContent = c.mainText;
+  document.getElementById('cardSubText').innerHTML = c.subText;
+
+  card.style.transform = '';
+  card.style.opacity = '1';
+  document.getElementById('swipeNope').style.opacity = '0';
+  document.getElementById('swipeLike').style.opacity = '0';
+
+  // Bounce in animation
+  card.style.animation = 'none';
+  card.offsetHeight;
+  card.style.animation = '';
+}
+
+const leftMessages = [
+  "That's okay. She's used to no. She'll be back.",
+  "Every no makes the next call better. Ask her.",
+  "She noted that. Moving on. 📋",
+  "Noted. She's already working on why.",
+  "She's heard worse. Still here. 💪",
+  "That's fine. So was the first call she ever lost."
+];
+let leftSwipeCount = 0;
+
+let toastTimer = null;
+
+function hideToast() {
+  const toast = document.getElementById('toast');
+  toast.style.display = 'none';
+  toast.style.opacity = '0';
+  if (toastTimer) { clearTimeout(toastTimer); toastTimer = null; }
+}
+
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.style.display = 'block';
+  toast.style.opacity = '1';
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => hideToast(), 2000);
+}
+
+function swipeCard(direction) {
+  if (currentCard >= cards.length) return;
+
+  hideToast();
+
+  const targetX = direction === 'left' ? -500 : 500;
+  const rotation = direction === 'left' ? -20 : 20;
+
+  if (direction === 'left') {
+    setTimeout(() => {
+      showToast(leftMessages[leftSwipeCount % leftMessages.length]);
+      leftSwipeCount++;
+    }, 200);
+  }
+
+  card.style.transition = 'transform 0.4s ease, opacity 0.4s ease';
+  card.style.transform = `translateX(${targetX}px) rotate(${rotation}deg)`;
+  card.style.opacity = '0';
+
+  if (direction === 'right' || direction === 'super') likesCount++;
+
+  setTimeout(() => {
+    currentCard++;
+    card.style.transition = '';
+    updateDots();
+    loadCard(currentCard);
+  }, 400);
+}
+
+// Drag to swipe
+card.addEventListener('mousedown', (e) => {
+  isDragging = true;
+  startX = e.clientX;
+  card.style.transition = '';
+});
+
+document.addEventListener('mousemove', (e) => {
+  if (!isDragging) return;
+  currentX = e.clientX - startX;
+  const rotation = currentX * 0.08;
+  card.style.transform = `translateX(${currentX}px) rotate(${rotation}deg)`;
+
+  const nopeEl = document.getElementById('swipeNope');
+  const likeEl = document.getElementById('swipeLike');
+  nopeEl.style.opacity = currentX < -20 ? Math.min(1, Math.abs(currentX) / 100) : '0';
+  likeEl.style.opacity = currentX > 20 ? Math.min(1, currentX / 100) : '0';
+});
+
+document.addEventListener('mouseup', () => {
+  if (!isDragging) return;
+  isDragging = false;
+
+  if (currentX > 100) swipeCard('right');
+  else if (currentX < -100) swipeCard('left');
+  else {
+    card.style.transition = 'transform 0.3s ease';
+    card.style.transform = '';
+    document.getElementById('swipeNope').style.opacity = '0';
+    document.getElementById('swipeLike').style.opacity = '0';
+  }
+  currentX = 0;
+});
+
+// Touch support
+card.addEventListener('touchstart', (e) => {
+  isDragging = true;
+  startX = e.touches[0].clientX;
+  card.style.transition = '';
+});
+
+document.addEventListener('touchmove', (e) => {
+  if (!isDragging) return;
+  currentX = e.touches[0].clientX - startX;
+  const rotation = currentX * 0.08;
+  card.style.transform = `translateX(${currentX}px) rotate(${rotation}deg)`;
+
+  const nopeEl = document.getElementById('swipeNope');
+  const likeEl = document.getElementById('swipeLike');
+  nopeEl.style.opacity = currentX < -20 ? Math.min(1, Math.abs(currentX) / 100) : '0';
+  likeEl.style.opacity = currentX > 20 ? Math.min(1, currentX / 100) : '0';
+});
+
+document.addEventListener('touchend', () => {
+  if (!isDragging) return;
+  isDragging = false;
+
+  if (currentX > 80) swipeCard('right');
+  else if (currentX < -80) swipeCard('left');
+  else {
+    card.style.transition = 'transform 0.3s ease';
+    card.style.transform = '';
+    document.getElementById('swipeNope').style.opacity = '0';
+    document.getElementById('swipeLike').style.opacity = '0';
+  }
+  currentX = 0;
+});
+
+function showMatch() {
+  document.getElementById('cardStack').style.display = 'none';
+  document.getElementById('actionButtons').style.display = 'none';
+  document.getElementById('swipeInstruction').style.display = 'none';
+
+  const matchScreen = document.getElementById('matchScreen');
+  matchScreen.style.display = 'flex';
+
+  // Update match sub text based on likes
+  matchScreen.querySelector('.match-sub').innerHTML =
+    `You swiped right ${likesCount} time${likesCount !== 1 ? 's' : ''}.<br>Seems like Kshama belongs at Bounce. 💜`;
+
+  launchConfetti();
+}
+
+function launchConfetti() {
+  const colors = ['#e24ed1', '#f8dbf5', '#000000', '#ffffff', '#cc44bb'];
+  for (let i = 0; i < 80; i++) {
+    setTimeout(() => {
+      const piece = document.createElement('div');
+      piece.className = 'confetti-piece';
+      piece.style.left = Math.random() * 100 + 'vw';
+      piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+      piece.style.width = (Math.random() * 10 + 6) + 'px';
+      piece.style.height = (Math.random() * 10 + 6) + 'px';
+      piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+      piece.style.animationDuration = (Math.random() * 2 + 2) + 's';
+      piece.style.animationDelay = Math.random() * 0.5 + 's';
+      document.body.appendChild(piece);
+      setTimeout(() => piece.remove(), 4000);
+    }, i * 30);
+  }
+}
+
+// Init
+initDots();
+loadCard(0);
+</script>
+</body>
+</html>
