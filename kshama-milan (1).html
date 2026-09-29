@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kshama in Milan</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,600;1,700&family=Nunito+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#5b4636;--paper:#fffaf2;--line:#b9a084;--rose:#d9718a;--sage:#6d9a63;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#5b4636;--paper:#fffaf2}}
+:root[data-theme="dark"]{--ink:#5b4636;--paper:#fffaf2}
+html{scroll-snap-type:y proximity;scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:#fbf7f0;color:var(--ink);font:400 1rem/1.45 "Nunito Sans","Trebuchet MS",system-ui,sans-serif}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9;opacity:.22;mix-blend-mode:multiply;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence baseFrequency='.8' numOctaves='2'/><feColorMatrix values='0 0 0 0 .5 0 0 0 0 .4 0 0 0 0 .3 0 0 0 .45 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+.scene{position:relative;min-height:100svh;overflow:hidden;scroll-snap-align:start;display:flex;flex-direction:column;align-items:center;padding:5vh 16px 40vh}
+.s1{background:linear-gradient(#fbe1d4,#fdf1e4 60%)}
+.s2{background:linear-gradient(#dcecf3,#fbf7f0 65%)}
+.s3{background:linear-gradient(#fbe0e6,#fff8ee 65%)}
+.s4{background:linear-gradient(#fdebc9,#f9d9c9 70%)}
+.s5{background:linear-gradient(#e2def2,#f8e0e7 70%)}
+.wash{position:absolute;border-radius:50%;filter:blur(30px);opacity:.55}
+.sun{position:absolute;top:6vh;right:8%;width:110px;height:110px;border-radius:50%;background:radial-gradient(#fff3c4,#fde2a1 60%,transparent 72%);animation:bob 6s ease-in-out infinite}
+.cloud{position:absolute;left:-200px;width:170px;height:46px;border-radius:50px;background:#fff;filter:blur(6px);opacity:.75;animation:drift 60s linear infinite}
+.c2{top:24vh;animation-duration:85s;animation-delay:-30s}
+.city{position:absolute;left:0;right:0;bottom:0;width:100%;height:60vh;min-height:340px}
+.card{position:relative;z-index:2;max-width:580px;width:100%;background:rgba(255,250,242,.95);border:1.5px solid var(--line);border-radius:24px;padding:20px 24px;box-shadow:0 10px 30px #b9a08444;opacity:0;transform:translateY(14px) scale(.96);transition:.7s ease}
+.card::after{content:"";position:absolute;left:16%;bottom:-13px;width:24px;height:24px;background:rgba(255,250,242,.95);border-right:1.5px solid var(--line);border-bottom:1.5px solid var(--line);transform:rotate(45deg) skew(8deg,8deg)}
+.in .card{opacity:1;transform:none}
+h1,h2{font-family:"Cormorant Garamond",Georgia,serif;font-style:italic;font-weight:700;margin:0 0 8px;line-height:1.05;color:#7a4b3a}
+h1{font-size:clamp(2.3rem,8vw,3.4rem)}
+h2{font-size:clamp(1.6rem,5.5vw,2.2rem)}
+p{margin:6px 0;font-size:1rem}
+.stats{display:flex;gap:10px;margin:12px 0}
+.stat{flex:1;background:#fbe3ea;border-radius:14px;padding:8px 4px;text-align:center}
+.stat b{display:block;font:italic 700 2rem "Cormorant Garamond",Georgia,serif;color:var(--rose)}
+.stat span{font-size:.8rem}
+.list{display:grid;gap:8px;margin:10px 0 4px}
+.list div{background:#eef4e8;border-left:4px solid #a8c79a;border-radius:8px;padding:7px 12px;font-size:.93rem;line-height:1.35}
+.list.warm div{background:#fbeee3;border-color:#e8b48e}
+.list b{color:#4f7d47}
+.list.warm b{color:#b0673a}
+.take{font-style:italic;margin-top:10px}
+.hint{position:absolute;bottom:14px;left:50%;translate:-50% 0;z-index:3;font-size:.85rem;background:#fffaf2cc;border:1px solid var(--line);padding:5px 14px;border-radius:20px;animation:bob 1.8s ease-in-out infinite}
+button{font:600 1rem "Nunito Sans",sans-serif;background:var(--rose);color:#fff;border:0;border-radius:20px;padding:10px 20px;margin-top:10px;cursor:pointer}
+button:focus-visible{outline:3px solid #6d9a63;outline-offset:2px}
+.petals{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden}
+.petal{position:absolute;top:-20px;width:10px;height:8px;background:#f5b5c5;border-radius:50% 0 50% 0;opacity:.85;animation:fall linear infinite}
+.tram{animation:tram 22s linear infinite}
+.walk{animation:bob 1.2s ease-in-out infinite;transform-box:fill-box}
+.wave{transform-origin:70% 90%;transform-box:fill-box;animation:wave 1s ease-in-out infinite}
+@keyframes bob{50%{translate:0 -6px}}
+@keyframes drift{to{left:110%}}
+@keyframes fall{to{transform:translate(80px,110vh) rotate(400deg)}}
+@keyframes tram{from{transform:translateX(-300px)}to{transform:translateX(1500px)}}
+@keyframes wave{50%{rotate:-25deg}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.note{font-size:.82rem;font-style:italic;opacity:.8}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<defs>
+<filter id="wc"><feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="3" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="4"/></filter>
+<linearGradient id="wg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset="1" stop-color="#8a6f56" stop-opacity=".18"/></linearGradient>
+<symbol id="bld" viewBox="0 0 160 260">
+<rect x="14" y="4" width="10" height="26" fill="#c9a98d"/><rect x="118" y="4" width="10" height="26" fill="#c9a98d"/>
+<polygon points="4,64 24,20 136,20 156,64" fill="#8d97a8" stroke="#6f7a8c" stroke-width="1.5"/>
+<g fill="#a9b3c3" stroke="#6f7a8c" stroke-width="1.5"><rect x="34" y="34" width="22" height="26"/><rect x="104" y="34" width="22" height="26"/><polygon points="34,34 45,22 56,34"/><polygon points="104,34 115,22 126,34"/></g>
+<rect x="8" y="64" width="144" height="196" fill="currentColor" stroke="#a58a6d" stroke-width="1.5"/>
+<rect x="8" y="64" width="144" height="196" fill="url(#wg)"/>
+<g fill="#cfd9e6" stroke="#a58a6d" stroke-width="1.5"><rect x="22" y="78" width="20" height="34"/><rect x="70" y="78" width="20" height="34"/><rect x="118" y="78" width="20" height="34"/><rect x="22" y="132" width="20" height="34"/><rect x="70" y="132" width="20" height="34"/><rect x="118" y="132" width="20" height="34"/><rect x="22" y="186" width="20" height="34"/><rect x="118" y="186" width="20" height="34"/></g>
+<path d="M14 172h132M14 118h132" stroke="#8a6f56" stroke-width="2"/>
+<rect x="62" y="200" width="36" height="60" rx="18" fill="#b98f6d" stroke="#8a6f56" stroke-width="1.5"/>
+</symbol>
+<symbol id="duomo" viewBox="0 0 300 230">
+<rect x="40" y="110" width="220" height="120" fill="#f3dcd0" stroke="#b08e7a" stroke-width="2"/>
+<polygon points="40,110 150,40 260,110" fill="#efd0c2" stroke="#b08e7a" stroke-width="2"/>
+<g fill="#f6e4da" stroke="#b08e7a" stroke-width="2"><rect x="52" y="62" width="12" height="58"/><rect x="92" y="52" width="12" height="68"/><rect x="196" y="52" width="12" height="68"/><rect x="236" y="62" width="12" height="58"/><rect x="144" y="14" width="12" height="56"/></g>
+<g fill="#e9c98a" stroke="#b08e7a" stroke-width="2"><polygon points="52,62 58,36 64,62"/><polygon points="92,52 98,24 104,52"/><polygon points="196,52 202,24 208,52"/><polygon points="236,62 242,36 248,62"/><polygon points="144,14 150,-14 156,14"/></g>
+<g stroke="#c4a08c" stroke-width="1.5"><path d="M70 130v90M100 130v90M200 130v90M230 130v90M120 120v100M180 120v100"/></g>
+<path d="M120 230v-56a30 30 0 0 1 60 0v56z" fill="#c9a98d" stroke="#8a6f56" stroke-width="2"/>
+<circle cx="150" cy="104" r="14" fill="#f3d9a4" stroke="#b08e7a" stroke-width="2"/>
+</symbol>
+<symbol id="tree" viewBox="0 0 120 160">
+<path d="M60 160V80M60 110L36 84M60 96l26-24" stroke="#8a6f56" stroke-width="4" fill="none" stroke-linecap="round"/>
+<g fill="currentColor"><circle cx="60" cy="42" r="34" opacity=".8"/><circle cx="34" cy="64" r="26" opacity=".75"/><circle cx="88" cy="64" r="26" opacity=".75"/><circle cx="62" cy="80" r="22" opacity=".7"/></g>
+<g fill="#fff" opacity=".28"><circle cx="50" cy="32" r="16"/><circle cx="76" cy="52" r="10"/></g>
+</symbol>
+<symbol id="cafe" viewBox="0 0 140 110">
+<rect x="8" y="26" width="124" height="84" fill="#f6e9d8" stroke="#a58a6d" stroke-width="1.5"/>
+<rect x="18" y="56" width="104" height="54" fill="#dbe7ef" stroke="#a58a6d" stroke-width="1.5"/>
+<path d="M2 30h136l-8-22H10z" fill="#f4a6b8" stroke="#c46d86" stroke-width="1.5"/>
+<path d="M2 30q8 12 17 0q8 12 17 0q8 12 17 0q8 12 17 0q8 12 17 0q8 12 17 0q8 12 17 0q8 12 17 0" fill="#f4a6b8" stroke="#c46d86" stroke-width="1.5"/>
+<g fill="#fff" opacity=".7"><circle cx="40" cy="82" r="10"/><circle cx="72" cy="86" r="8"/><circle cx="100" cy="80" r="10"/></g>
+<g fill="#f5b5c5"><circle cx="24" cy="106" r="5"/><circle cx="34" cy="104" r="4"/><circle cx="112" cy="106" r="5"/></g>
+</symbol>
+<symbol id="tramS" viewBox="0 0 200 80">
+<rect x="4" y="10" width="192" height="52" rx="14" fill="#efc27a" stroke="#b78a4a" stroke-width="2"/>
+<g fill="#e3f1f7" stroke="#b78a4a" stroke-width="2"><rect x="18" y="20" width="32" height="22" rx="4"/><rect x="60" y="20" width="32" height="22" rx="4"/><rect x="102" y="20" width="32" height="22" rx="4"/><rect x="144" y="20" width="32" height="22" rx="4"/></g>
+<g fill="#8a6f56"><circle cx="40" cy="66" r="8"/><circle cx="160" cy="66" r="8"/></g><path d="M100 10V0" stroke="#8a6f56" stroke-width="3"/>
+</symbol>
+<symbol id="k" viewBox="0 0 100 150">
+<g class="walk">
+<rect x="34" y="102" width="12" height="40" rx="6" fill="#4a3428"/><rect x="54" y="102" width="12" height="40" rx="6" fill="#4a3428"/>
+<path d="M28 60h44l8 50H20z" fill="#e98aa0" stroke="#a5566d" stroke-width="2.5"/>
+<circle cx="50" cy="34" r="24" fill="#f3c6a3" stroke="#a5704f" stroke-width="2.5"/>
+<path d="M24 34C22 6 78 4 76 34c-6-12-14-16-26-16S30 22 24 34zM24 34c-6 22 2 46 8 52-2-20 0-34 0-40zM76 34c6 22-2 46-8 52 2-20 0-34 0-40z" fill="#4a3428"/>
+<circle cx="41" cy="36" r="3" fill="#4a3428"/><circle cx="59" cy="36" r="3" fill="#4a3428"/><circle cx="35" cy="45" r="4" fill="#f0a3a3" opacity=".6"/><circle cx="65" cy="45" r="4" fill="#f0a3a3" opacity=".6"/>
+<path d="M42 46q8 8 16 0" stroke="#a5566d" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+<rect x="18" y="64" width="12" height="34" rx="6" fill="#f3c6a3" stroke="#a5704f" stroke-width="2"/>
+<rect class="wave" x="70" y="64" width="12" height="34" rx="6" fill="#f3c6a3" stroke="#a5704f" stroke-width="2"/>
+</g>
+</symbol>
+</defs>
+</svg>
+<div class="petals" id="petals" aria-hidden="true"></div>
+
+<section class="scene s1 in" id="top">
+<div class="sun"></div><div class="cloud" style="top:10vh"></div><div class="cloud c2"></div>
+<div class="card">
+<h1>Ciao, Milano!</h1>
+<p>I'm Kshama. I'll start with Third Bridge in Mumbai, where I worked in Private Equity client services.</p>
+<div class="stats">
+<div class="stat"><b data-n="60" data-s="+">0</b><span>client briefs</span></div>
+<div class="stat"><b data-n="600" data-s="+">0</b><span>outbound calls</span></div>
+<div class="stat"><b data-n="20" data-s="+">0</b><span>experts converted</span></div>
+</div>
+<p>Nearly every brief was a new sector, from Defence to Voice AI. I learned each client's pressure points fast, then found the expert who could answer their due diligence question.</p><p>About 3% of cold calls became experts. I treated the other 97% as data on who to call and how to open.</p>
+</div>
+<svg class="city" data-l="1" viewBox="0 0 1200 500" preserveAspectRatio="xMidYMax slice" aria-label="Watercolor Milan street with the Duomo, a blossom tree and a cafe"></svg>
+<div class="hint">Scroll down</div>
+</section>
+
+<section class="scene s2">
+<div class="sun"></div><div class="cloud" style="top:12vh"></div><div class="cloud c2"></div>
+<div class="card">
+<h2>What leading and building taught me</h2>
+<div class="list">
+<div><b>Move people to a result.</b> Foresight went from 1 event a year to 2 a semester, and one breakfast sold 70+ tickets in a week. I led ISCG and DUCG teams of 6 and 4.</div>
+<div><b>Find the real problem.</b> Skippio: 35+ consumers and 8+ businesses led to a plan the founder adopted. EHL: C-suite interviews on resistance to AI. AnamVR: 30+ users.</div>
+<div><b>Align many stakeholders.</b> At RedZinc, one narrative brought 47 partners and EU reviewers together, and I rebuilt HubSpot deal tracking so the pipeline could be trusted.</div>
+<div><b>Start something myself.</b> My Rakhi venture sold 150 units in 3 days at about 80% margin.</div>
+</div>
+<p class="take">Next, I'll show how I'd use this on a real account.</p>
+</div>
+<svg class="city" data-l="2" viewBox="0 0 1200 500" preserveAspectRatio="xMidYMax slice" aria-label="Watercolor Milan street with a tram"></svg>
+</section>
+
+<section class="scene s3">
+<div class="sun"></div><div class="cloud" style="top:9vh"></div>
+<div class="card">
+<h2>A first look at Intesa Sanpaolo</h2>
+<div class="list warm">
+<div><b>Why them.</b> Intesa says its Academy4Future programme trains its 90,000+ people in AI, data, risk and digital skills, with about 20,000 colleagues joining each year. It also runs remote sessions such as Vivichat. That is a lot of learning and communication content to store, deliver and measure.</div>
+<div><b>Why us.</b> Bending Spoons now owns Brightcove and Vimeo, both built for enterprise video hosting and streaming.</div>
+<div><b>My hypothesis.</b> Start with training video for Academy4Future, then internal town halls, then external events.</div>
+</div>
+<p class="note">Built from public information only. I don't know which video tools they use today, so call one is for finding out.</p>
+</div>
+<svg class="city" data-l="3" viewBox="0 0 1200 500" preserveAspectRatio="xMidYMax slice" aria-label="Watercolor Milan square with blossom trees"></svg>
+</section>
+
+<section class="scene s4">
+<div class="sun"></div><div class="cloud" style="top:11vh"></div>
+<div class="card">
+<h2>Who I'd call, and how I'd know it's working</h2>
+<div class="list">
+<div><b>Order of calls.</b> First, whoever owns Academy4Future: their problem is delivery at scale and proving completion. Then internal communications. In parallel, IT security and procurement, because a bank's vendor review, including EU rules such as DORA, sets the timeline.</div>
+<div><b>First 90 days.</b> Named decision-makers mapped, discovery calls held, one Academy4Future programme scoped as a pilot, and the security review started. I'd track those before revenue.</div>
+<div><b>The objection I expect.</b> There have been reports of team cuts at Vimeo and Brightcove since the acquisitions, and a bank will ask about continuity. I'd answer with written support terms and a named roadmap contact, and be straight about what I can't promise.</div>
+<div><b>Feedback loop.</b> Whatever Intesa tells me goes back to the product team.</div>
+</div>
+</div>
+<svg class="city" data-l="4" viewBox="0 0 1200 500" preserveAspectRatio="xMidYMax slice" aria-label="Watercolor Milan at golden hour"></svg>
+</section>
+
+<section class="scene s5">
+<div class="sun"></div><div class="cloud" style="top:14vh"></div>
+<div class="card">
+<h2>Why start here</h2>
+<p>Bending Spoons buys established products and runs them for the long term, and Brightcove and Vimeo put enterprise video in that portfolio. I'd like to be the person who takes that to a bank like Intesa, listens closely, and stays to own the result. Grazie for your time!</p>
+<button id="again">Watch again</button>
+</div>
+<svg class="city" data-l="5" viewBox="0 0 1200 500" preserveAspectRatio="xMidYMax slice" aria-label="Watercolor Milan cafe corner"></svg>
+</section>
+
+<script>
+var L={
+1:[['bld',-10,131,190,309,'#ecd3b3'],['bld',175,160,170,280,'#f0dcc4'],['duomo',350,180,340,260],['tree',700,235,150,200,'#f5b5c5'],['cafe',840,283,210,157],['tree',1030,250,140,190,'#b6d3a0'],['k',560,300,110,165]],
+2:[['bld',40,150,180,293,'#f0dcc4'],['bld',220,120,200,325,'#ecd3b3'],['tree',450,250,140,187,'#b6d3a0'],['bld',620,170,170,276,'#efd9c8'],['bld',790,130,190,309,'#ecd3b3'],['cafe',990,290,200,157],['tram',300,352,250,100],['k',880,300,110,165]],
+3:[['tree',20,230,190,253,'#f5b5c5'],['bld',230,140,190,309,'#f0dcc4'],['cafe',430,283,220,173],['tree',640,220,200,267,'#f5b5c5'],['bld',870,150,180,293,'#ecd3b3'],['tree',1040,260,140,187,'#b6d3a0'],['k',150,300,110,165]],
+4:[['bld',0,160,170,276,'#efd9c8'],['duomo',160,230,280,214],['bld',450,130,190,309,'#f0dcc4'],['tree',650,250,140,187,'#b6d3a0'],['bld',790,150,180,293,'#ecd3b3'],['bld',970,120,200,325,'#f0dcc4'],['k',700,300,110,165]],
+5:[['tree',0,250,150,200,'#b6d3a0'],['bld',150,140,190,309,'#ecd3b3'],['cafe',380,270,230,181],['tree',600,215,210,280,'#f5b5c5'],['bld',830,150,190,309,'#f0dcc4'],['tram',960,352,250,100],['k',520,300,110,165]]};
+document.querySelectorAll('.city').forEach(function(s){
+ var h='<use href="#bld" x="-1000" y="0" width="1" height="1"/><g filter="url(#wc)">';
+ h='<rect x="0" y="440" width="1200" height="60" fill="#d9d3de"/><path d="M0 440h1200" stroke="#b9a084" stroke-width="2"/><g stroke="#b9a084" stroke-width="1" opacity=".6"><path d="M60 458h90M260 470h110M520 456h80M760 472h120M1000 460h100"/></g><g filter="url(#wc)">';
+ L[s.dataset.l].forEach(function(o){
+  var u='<use href="#'+o[0]+(o[0]=='tramS'?'':'')+'" x="'+o[1]+'" y="'+o[2]+'" width="'+o[3]+'" height="'+o[4]+'"'+(o[5]?' style="color:'+o[5]+'"':'')+'/>';
+  if(o[0]=='tram')u='<g class="tram"><use href="#tramS" x="0" y="'+o[2]+'" width="'+o[3]+'" height="'+o[4]+'"/></g>';
+  if(o[0]=='k')h+='</g>'+u+'<g filter="url(#wc)">';else h+=u;
+ });
+ s.innerHTML=h+'</g>';
+});
+var p=document.getElementById('petals');
+for(var i=0;i<14;i++){var e=document.createElement('span');e.className='petal';e.style.left=Math.random()*100+'%';e.style.animationDuration=(9+Math.random()*8)+'s';e.style.animationDelay=(-Math.random()*14)+'s';p.appendChild(e)}
+function count(el){var n=+el.dataset.n,s=el.dataset.s||'',t=0;var id=setInterval(function(){t+=Math.ceil(n/30);if(t>=n){t=n;clearInterval(id)}el.textContent=t+(t===n?s:'')},30)}
+var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting&&!e.target.classList.contains('in')){e.target.classList.add('in')}})},{threshold:.3});
+document.querySelectorAll('.scene').forEach(function(s){io.observe(s)});
+document.querySelectorAll('[data-n]').forEach(count);
+document.getElementById('again').onclick=function(){document.getElementById('top').scrollIntoView({behavior:'smooth'})};
+</script>
+</body>
+</html>
